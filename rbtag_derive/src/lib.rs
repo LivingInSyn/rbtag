@@ -24,20 +24,7 @@ pub fn build_dt(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     proc_macro::TokenStream::from(expanded)
 }
 
-/// This function gets the current short git commit hash from windows
-/// or *nix and returns it as a `&'static str`
-#[proc_macro_derive(BuildGitCommit)]
-pub fn get_build_commit(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
-    println!("build commit called");
-    
-    //clean vs dirty command:
-    //git diff-index --quiet HEAD --
-    //0 if clean, 1+ if dirty
-
-    //git info command
-    //git show -s --format=%h-%ct
-    //output: fb77f93-1547517292
-
+fn get_commit_info() -> String {
     let git_commit_command = "git show -s --format=%h-%ct";
     let git_dirty_command = "git diff-index --quiet HEAD --";
     // get the git commit/datetime info
@@ -71,7 +58,15 @@ pub fn get_build_commit(input: proc_macro::TokenStream) -> proc_macro::TokenStre
         false => "dirty"
     };
 
-    let output = format!("{}-{}", String::from_utf8_lossy(&commit_output.stdout), dirty_string);
+    format!("{}-{}", String::from_utf8_lossy(&commit_output.stdout), dirty_string)
+}
+
+/// This function gets the current short git commit hash from windows
+/// or *nix and returns it as a `&'static str`
+#[proc_macro_derive(BuildGitCommit)]
+pub fn get_build_commit(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
+    println!("build commit called");
+    let gitoutput = get_commit_info();
 
     let input = parse_macro_input!(input as DeriveInput);
     let name = input.ident;
@@ -80,7 +75,7 @@ pub fn get_build_commit(input: proc_macro::TokenStream) -> proc_macro::TokenStre
         impl BuildGitCommit for #name {
             fn get_build_commit(&self) -> &'static str {
                 //String::from("test")
-                #output
+                #gitoutput
             }
         }
     };
