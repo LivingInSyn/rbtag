@@ -3,6 +3,11 @@ name = "rbtag_derive"
 version = "0.1.0"
 authors = ["Jeremy Mill <jeremy.mill@otis.com>"]
 edition = "2018"
+description = "A procedural macro impl to add git and build datetime info"
+license = "MIT"
+readme = "README.md"
+keywords = ["build", "date", "time", "commit", "datetime"]
+repository = "https://github.com/LivingInSyn/rbtag"
 
 [lib]
 proc-macro = true

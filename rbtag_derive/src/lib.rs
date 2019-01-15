@@ -5,6 +5,9 @@ use syn::{parse_macro_input,DeriveInput};
 use chrono::prelude::*;
 use std::process::Command;
 
+
+/// This function creates a utc datetime in rfc3339 format and returns it as a 
+/// `&'static str`
 #[proc_macro_derive(BuildDateTime)]
 pub fn build_dt(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     let input = parse_macro_input!(input as DeriveInput);
@@ -13,7 +16,6 @@ pub fn build_dt(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     let expanded = quote! {
         impl BuildDateTime for #name {
             fn get_build_timestamp(&self) -> &'static str {
-                //String::from("test")
                 #utc
             }
         }
@@ -21,6 +23,8 @@ pub fn build_dt(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     proc_macro::TokenStream::from(expanded)
 }
 
+/// This function gets the current short git commit hash from windows
+/// or *nix and returns it as a `&'static str`
 #[proc_macro_derive(BuildGitCommit)]
 pub fn get_build_commit(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     //git rev-parse --short HEAD
