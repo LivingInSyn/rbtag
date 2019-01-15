@@ -6,4 +6,7 @@ struct BuildTag;
 fn main() {
     println!("{}", BuildTag{}.get_build_timestamp());
     println!("{}", BuildTag{}.get_build_commit());
+    
+    //println!("{}", rbtag::get_build_timestamp());
+    println!("{}", rbtag::get_build_commit());
 }

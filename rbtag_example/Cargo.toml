@@ -5,4 +5,4 @@ authors = ["Jeremy Mill <jeremy.mill@otis.com>"]
 edition = "2018"
 
 [dependencies]
-rbtag = { path = "..", version="0.1.0" }
+rbtag = { path = ".." }
