@@ -1,6 +1,6 @@
-use rbtag::{BuildDateTime, BuildGitCommit};
+use rbtag::{BuildDateTime, BuildInfo};
 
-#[derive(BuildDateTime, BuildGitCommit)]
+#[derive(BuildDateTime, BuildInfo)]
 struct BuildTag;
 
 fn main() {

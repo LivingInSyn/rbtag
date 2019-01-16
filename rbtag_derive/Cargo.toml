@@ -1,6 +1,6 @@
 [package]
 name = "rbtag_derive"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["Jeremy Mill <jeremy.mill@otis.com>"]
 edition = "2018"
 description = "A procedural macro impl to add git and build datetime info"
@@ -15,5 +15,4 @@ proc-macro = true
 [dependencies]
 syn = "0.15.24"
 quote = "0.6.10"
-chrono = "0.4.6"
 proc-macro2 = "0.4.24"
