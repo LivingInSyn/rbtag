@@ -2,9 +2,35 @@ extern crate proc_macro;
 
 use quote::{quote};
 use syn::{parse_macro_input,DeriveInput};
-use chrono::prelude::*;
 use std::process::Command;
+use std::env;
 
+fn get_time_info() -> String {
+    //check if the environmental variable is set
+    let key = "SOURCE_DATE_EPOCH";
+    if let Some(sde_val) = env::var_os(key) {
+        if let Some(os_str) = sde_val.to_str() {
+            os_str.to_string()
+        } else {
+            String::new()
+        }
+    } else {
+        let git_commit_command = "git show -s --format=%ct";
+        let commit_output = if cfg!(target_os = "windows") {
+            Command::new("cmd")
+                    .args(&["/C", git_commit_command])
+                    .output()
+                    .expect("failed to execute process")
+        } else {
+            Command::new("sh")
+                    .arg("-c")
+                    .arg(git_commit_command)
+                    .output()
+                    .expect("failed to execute process")
+        };
+        String::from_utf8_lossy(&commit_output.stdout).to_string()
+    }
+}
 
 /// This function creates a utc datetime in rfc3339 format and returns it as a 
 /// `&'static str`
@@ -13,11 +39,11 @@ pub fn build_dt(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     println!("build dt called");
     let input = parse_macro_input!(input as DeriveInput);
     let name = input.ident;
-    let utc: String = Utc::now().to_rfc3339();
+    let time: String = get_time_info();
     let expanded = quote! {
         impl BuildDateTime for #name {
             fn get_build_timestamp(&self) -> &'static str {
-                #utc
+                #time
             }
         }
     };
@@ -25,7 +51,7 @@ pub fn build_dt(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
 }
 
 fn get_commit_info() -> String {
-    let git_commit_command = "git show -s --format=%h-%ct";
+    let git_commit_command = "git show -s --format=%h";
     let git_dirty_command = "git diff-index --quiet HEAD --";
     // get the git commit/datetime info
     let commit_output = if cfg!(target_os = "windows") {
@@ -65,7 +91,6 @@ fn get_commit_info() -> String {
 /// or *nix and returns it as a `&'static str`
 #[proc_macro_derive(BuildGitCommit)]
 pub fn get_build_commit(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
-    println!("build commit called");
     let gitoutput = get_commit_info();
 
     let input = parse_macro_input!(input as DeriveInput);
