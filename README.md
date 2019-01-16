@@ -16,6 +16,8 @@ eaba6e2-clean
 
 Where clean vs dirty indicates the presence of uncommited changes to tracked files in the repo.
 
+**NOTE** If you have this code continue to return 'dirty', run `git diff` to see what files are causing the issue.
+
 ## Build Time Info
 
 To use the Git commit Info functionality just add `#[derive(BuildDateTime)]` to a struct and call `.get_build_timestamp()` on it. In order to comply with https://reproducible-builds.org/, two sources of time are possibly used the following precedence
