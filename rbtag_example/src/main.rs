@@ -1,12 +1,9 @@
-use rbtag::{BuildDateTime, BuildGitCommit};
+use rbtag::{BuildDateTime, BuildInfo};
 
-#[derive(BuildDateTime, BuildGitCommit)]
+#[derive(BuildDateTime, BuildInfo)]
 struct BuildTag;
 
 fn main() {
     println!("{}", BuildTag{}.get_build_timestamp());
     println!("{}", BuildTag{}.get_build_commit());
-    
-    //println!("{}", rbtag::get_build_timestamp());
-    println!("{}", rbtag::get_build_commit());
 }

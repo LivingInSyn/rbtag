@@ -7,6 +7,6 @@ pub trait BuildDateTime {
 }
 
 /// Trait for returning the build commit short hash
-pub trait BuildGitCommit {
+pub trait BuildInfo {
     fn get_build_commit(&self) -> &'static str;
 }

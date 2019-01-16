@@ -10,7 +10,13 @@ fn get_time_info() -> String {
     let key = "SOURCE_DATE_EPOCH";
     if let Some(sde_val) = env::var_os(key) {
         if let Some(os_str) = sde_val.to_str() {
-            os_str.to_string()
+            let mut oss = os_str.to_string();
+            if oss.ends_with("\n") {
+                oss.pop();
+                oss
+            } else {
+                oss
+            }
         } else {
             String::new()
         }
@@ -28,7 +34,13 @@ fn get_time_info() -> String {
                     .output()
                     .expect("failed to execute process")
         };
-        String::from_utf8_lossy(&commit_output.stdout).to_string()
+        let mut gco = String::from_utf8_lossy(&commit_output.stdout).to_string();
+        if gco.ends_with("\n") {
+            gco.pop();
+            gco
+        } else {
+            gco
+        }
     }
 }
 
@@ -66,6 +78,9 @@ fn get_commit_info() -> String {
                 .output()
                 .expect("failed to execute process")
     };
+    let mut gitoutput = String::from_utf8_lossy(&commit_output.stdout).to_string();
+    //if gitoutput ends with a newline, pop it
+    gitoutput.pop();
     // get the dirty status
     let dirty_output = if cfg!(target_os = "windows") {
         Command::new("cmd")
@@ -83,21 +98,19 @@ fn get_commit_info() -> String {
         true => "clean",
         false => "dirty"
     };
-
-    format!("{}-{}", String::from_utf8_lossy(&commit_output.stdout), dirty_string)
+    format!("{}-{}", gitoutput, dirty_string)
 }
 
 /// This function gets the current short git commit hash from windows
 /// or *nix and returns it as a `&'static str`
-#[proc_macro_derive(BuildGitCommit)]
+#[proc_macro_derive(BuildInfo)]
 pub fn get_build_commit(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     let gitoutput = get_commit_info();
-
     let input = parse_macro_input!(input as DeriveInput);
     let name = input.ident;
     //let stdout = String::from_utf8_lossy(&output.stdout);
     let expanded = quote! {
-        impl BuildGitCommit for #name {
+        impl BuildInfo for #name {
             fn get_build_commit(&self) -> &'static str {
                 //String::from("test")
                 #gitoutput
