@@ -48,7 +48,6 @@ fn get_time_info() -> String {
 /// `&'static str`
 #[proc_macro_derive(BuildDateTime)]
 pub fn build_dt(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
-    println!("build dt called");
     let input = parse_macro_input!(input as DeriveInput);
     let name = input.ident;
     let time: String = get_time_info();
