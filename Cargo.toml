@@ -1,6 +1,6 @@
 [package]
 name = "rbtag"
-version = "0.2.0"
+version = "0.3.0"
 authors = ["Jeremy Mill <jeremy.mill@otis.com>"]
 edition = "2018"
 description = "A procedural macro to add build DateTime and git commit information at compile time"
