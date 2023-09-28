@@ -44,7 +44,7 @@ fn get_time_info() -> String {
     }
 }
 
-/// This function creates a utc datetime in rfc3339 format and returns it as a 
+/// This function creates a utc datetime in rfc3339 format and returns it as a
 /// `&'static str`
 #[proc_macro_derive(BuildDateTime)]
 pub fn build_dt(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
@@ -62,7 +62,7 @@ pub fn build_dt(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
 }
 
 fn get_commit_info() -> String {
-    let git_commit_command = "git show -s --format=%h";
+    let git_commit_command = "git show -s --format=%H";
     let git_dirty_command = "git diff-index --quiet HEAD --";
     // get the git commit/datetime info
     let commit_output = if cfg!(target_os = "windows") {
@@ -104,15 +104,18 @@ fn get_commit_info() -> String {
 /// or *nix and returns it as a `&'static str`
 #[proc_macro_derive(BuildInfo)]
 pub fn get_build_commit(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
-    let gitoutput = get_commit_info();
+    let git_commit_hash_long = get_commit_info();
+    let git_commit_hash_short = git_commit_hash_long[..12].to_string();
     let input = parse_macro_input!(input as DeriveInput);
     let name = input.ident;
-    //let stdout = String::from_utf8_lossy(&output.stdout);
     let expanded = quote! {
         impl BuildInfo for #name {
             fn get_build_commit(&self) -> &'static str {
-                //String::from("test")
-                #gitoutput
+                #git_commit_hash_short
+            }
+
+            fn get_build_commit_long(&self) -> &'static str {
+                #git_commit_hash_long
             }
         }
     };

@@ -1,7 +1,7 @@
 # RBTAG
-rbtag is a procedural macro designed to add build time information or git commit information to your crate or project. 
+rbtag is a procedural macro designed to add build time information or git commit information to your crate or project.
 
-## Git Commit Info 
+## Git Commit Info
 To use the Git commit Info functionality just add `#[derive(BuildInfo)]` to a struct and call `.get_build_commit()` on it. The output looks like the following:
 
 ```shell
@@ -29,11 +29,15 @@ To use the Git commit Info functionality just add `#[derive(BuildDateTime)]` to 
 The following is an example of running the below 'example' code with and without an environmental variable set
 ```shell
 #$ cargo clean && env SOURCE_DATE_EPOCH='12345678909' cargo run
-12345678901
-90c2266-dirty
+12345678909
+395e50bbf569
+395e50bbf569a792c24518a9ee8f5aff7068694a-clean
+
 #? cargo clean && cargo run
-1547647585
-90c2266-dirty
+1548704908
+395e50bbf569
+395e50bbf569a792c24518a9ee8f5aff7068694a-clean
+
 ```
 
 ## Example
@@ -46,6 +50,7 @@ struct BuildTag;
 fn main() {
     println!("{}", BuildTag{}.get_build_timestamp());
     println!("{}", BuildTag{}.get_build_commit());
+    println!("{}", BuildTag{}.get_build_commit_long());
 }
 
 ```
