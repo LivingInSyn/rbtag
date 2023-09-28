@@ -10,5 +10,4 @@ keywords = ["build", "date", "time", "commit", "datetime"]
 repository = "https://github.com/LivingInSyn/rbtag"
 
 [dependencies]
-rbtag_derive = "0.3.0"
-#rbtag_derive = {path= "rbtag_derive"}
+rbtag_derive = { path = "rbtag_derive" }
